@@ -1,0 +1,32 @@
+{
+    "admin": {
+        "GET": [
+            "/event/all",
+            "/event/solo"
+        ],
+        "POST": [
+            "/event/add"
+        ],
+        "PATCH": [
+            "/event/update"
+        ],
+        "DELETE": [
+            "/event/delete"
+        ]
+    },
+    "user": {
+        "GET": [
+            "/event/all",
+            "/event/solo"
+        ],
+        "POST": [
+            "/event/register"
+        ]
+    },
+    "guest": {
+        "GET": [
+            "/event/all",
+            "/event/solo"
+        ]
+    }
+}
