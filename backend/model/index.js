@@ -10,8 +10,8 @@ dotenv.config()
 
 const checkUserInDb = async (email) => {
     try {
-        const r = await user.findOne({ email })
-        return r
+        const check = await user.findOne({ email })
+        return check
     } catch (error) {
         return (`Error in checkUserInDb ${error}`)
     }
@@ -21,8 +21,8 @@ const createUser = async ({ username, email, password, role }) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = { username, email, password: hashedPassword, role }
-        const r = await user.create(newUser)
-        return r
+        const userCreated = await user.create(newUser)
+        return userCreated
     } catch (error) {
         return (`Error in createUser ${error}`)
     }
@@ -46,8 +46,8 @@ const checkPassword = async (newPassword, oldPassword) => {
 
 const getUserById = async (userId) => {
     try {
-        const r = await user.findOne({ _id: new mongoose.Types.ObjectId(userId) })
-        return r
+        const userdetails = await user.findOne({ _id: new mongoose.Types.ObjectId(userId) })
+        return userdetails
     } catch (error) {
         return (`Error in getUserById ${error}`)
     }
@@ -84,8 +84,8 @@ const patchEvent = async ({ name, description, date, attendees, event_id, imageP
 
 const geteventsByUserId = async () => {
     try {
-        const r = await event.find()
-        return r
+        const events = await event.find()
+        return events
     } catch (error) {
         return (`Error in geteventsByUserId ${error}`)
     }
@@ -93,16 +93,16 @@ const geteventsByUserId = async () => {
 
 const getEvent = async (event_id) => {
     try {
-        const f = await event.findById({ _id: event_id })
-        return f
+        const fetch = await event.findById({ _id: event_id })
+        return fetch
     } catch (error) {
         return (`Error in getEvent ${error}`)
     }
 }
 
-const storeIp = async (u_id, ip, method, path) => {
+const storeIp = async (userId, ip, method, path) => {
     try {
-        const newIp = { user: new mongoose.Types.ObjectId(u_id), ip, method, path }
+        const newIp = { user: new mongoose.Types.ObjectId(userId), ip, method, path }
         await Ip.create(newIp)
         return (`Ip stored successfully`)
     } catch (error) {
@@ -110,23 +110,18 @@ const storeIp = async (u_id, ip, method, path) => {
     }
 }
 
-const registerevent = async (event_id, name, email) => {
+const registerevent = async (event_id, username, email) => {
     try {
         const details = await event.findById({ _id: event_id });
-        const e_n = details.name
-        const e_d = details.date
-        const e_i = details.imagePath
-        const u_n = name
-        const u_e = email
-        const e_l = details.location
-        await sendEmail(u_e, u_n, e_n, e_d, e_i, e_l)
-        return (`Event registered successfully Mail sent to ${u_n}`)
+        const { name, date, imagePath, location } = details
+        await sendEmail(email, username, name, date, imagePath, location)
+        return (`Event registered successfully Mail sent to ${name}`)
     } catch (error) {
         return (`Error in registerevent: ${error}`)
     }
 }
 
-const sendEmail = async (u_e, u_n, e_n, e_d, e_i, e_l) => {
+const sendEmail = async (email, username, name, date, imagePath, location) => {
     try {
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -139,19 +134,19 @@ const sendEmail = async (u_e, u_n, e_n, e_d, e_i, e_l) => {
         })
         const mailOptions = {
             from: process.env.EMAIL,
-            to: u_e,
-            subject: `Registration Confirmation for ${e_n}`,
+            to: email,
+            subject: `Registration Confirmation for ${name}`,
             html: `
                  <div
         style="font-family: Arial, sans-serif; color: #333; padding: 25px; border: 2px solid #ddd; border-radius: 12px; max-width: 700px; margin: auto; background-color: #f9f9f9;">
         <h1 style="color: #007BFF; text-align: center;">🎉 Registration Confirmation 🎉</h1>
-        <h3 style="color: #444;">Dear <strong>${u_n}</strong>,</h3>
+        <h3 style="color: #444;">Dear <strong>${username}</strong>,</h3>
         <h4>We are pleased to inform you that your registration for the upcoming event has been successfully confirmed.
             We appreciate your interest and look forward to your participation.</h4>
-        <h2 style="color: #28A745; text-align: center;">${e_n}</h2>
-        <h4 style="color: #222;"><strong>📅 Event Date:</strong> ${e_d}
+        <h2 style="color: #28A745; text-align: center;">${name}</h2>
+        <h4 style="color: #222;"><strong>📅 Event Date:</strong> ${date}
         </h4>
-        <h4 style="color: #222;"><strong>📍 Event Location:</strong> ${e_l}
+        <h4 style="color: #222;"><strong>📍 Event Location:</strong> ${location}
         </h4>
         <h4>This event is designed to provide an enriching and engaging experience, offering you valuable insights,
             networking opportunities, and knowledge sharing from industry experts. We encourage you to take full
@@ -164,9 +159,18 @@ const sendEmail = async (u_e, u_n, e_n, e_d, e_i, e_l) => {
             `
         }
         const info = await transporter.sendMail(mailOptions)
-        return (`Event registered successfully Mail sent to ${u_n}`)
+        return (`Event registered successfully Mail sent to ${username}`)
     } catch (error) {
         return (`Error in sendEmail ${error}`)
+    }
+}
+
+const deleteIp = async () => {
+    try {
+        const deletingAllIps = await Ip.deleteMany({})
+        return `Deleted ${deletingAllIps.deletedCount} records successfully`
+    } catch (error) {
+        return (`Error in deletingIps ${error}`)
     }
 }
 
@@ -182,5 +186,6 @@ module.exports = {
     geteventsByUserId,
     getEvent,
     storeIp,
-    registerevent
+    registerevent,
+    deleteIp
 }

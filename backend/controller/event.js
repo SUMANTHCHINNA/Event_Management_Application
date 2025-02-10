@@ -1,9 +1,13 @@
-const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent } = require('../model/index')
+const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent, storeIp, deleteIp } = require('../model/index')
 const fs = require('fs')
 const path = require('path')
 
+
 const addEvent = async (req, res) => {
     try {
+        let { userId } = req.user.userId
+        let { ip, method, path } = req
+        storeIp(userId, ip, method, path)
         const { name, description, date, location, attendees } = req.body
         const imagePath = req.file ? `/images/${req.file.filename}` : null
         if (!name || !description || !date || !attendees || name.trim().length == 0 || description.trim().length == 0) {
@@ -20,6 +24,9 @@ const addEvent = async (req, res) => {
 
 const deleteEvent = async (req, res) => {
     try {
+        let { userId } = req.user.userId
+        let { ip, method, path } = req
+        storeIp(userId, ip, method, path)
         const event_id = req.params.id
         const deleted = await deleteEventById(event_id)
         res.status(201).json({ status: true, message: deleted })
@@ -30,6 +37,9 @@ const deleteEvent = async (req, res) => {
 
 const updateEvent = async (req, res) => {
     try {
+        let { userId } = req.user.userId
+        let { ip, method, path } = req
+        storeIp(userId, ip, method, path)
         const event_id = req.params.id
         const { name, description, date, attendees } = req.body
         const imagePath = req.file ? req.file.path : undefined
@@ -42,6 +52,9 @@ const updateEvent = async (req, res) => {
 
 const getAllEvents = async (req, res) => {
     try {
+        let { userId } = req.user.userId
+        let { ip, method, path } = req
+        storeIp(userId, ip, method, path)
         const events = await geteventsByUserId() || []
         res.status(200).json({ status: true, message: events })
     } catch (error) {
@@ -51,6 +64,9 @@ const getAllEvents = async (req, res) => {
 
 const getEventById = async (req, res) => {
     try {
+        let { userId } = req.user.userId
+        let { ip, method, path } = req
+        storeIp(userId, ip, method, path)
         const event_id = req.params.id
         const s = await getEvent(event_id)
         res.status(201).json({ status: true, message: s })
@@ -61,6 +77,9 @@ const getEventById = async (req, res) => {
 
 const registerEvent = async (req, res) => {
     try {
+        let { userId } = req.user.userId
+        let { ip, method, path } = req
+        storeIp(userId, ip, method, path)
         const event_id = req.params.id
         const name = req.user.username
         const email = req.user.email
@@ -81,6 +100,18 @@ const getEventImage = async (req, res) => {
     }
 }
 
+const deleteIps = async (req, res) => {
+    try {
+        const deletingIps = await deleteIp()
+        res.status(201).json({ status: true, message: deletingIps })
+
+    } catch (error) {
+        res.status(500).json({ status: false, message: error.message })
+
+    }
+
+}
+
 module.exports = {
     addEvent,
     deleteEvent,
@@ -88,5 +119,6 @@ module.exports = {
     getAllEvents,
     getEventById,
     registerEvent,
-    getEventImage
+    getEventImage,
+    deleteIps
 }

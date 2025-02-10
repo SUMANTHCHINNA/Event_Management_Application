@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { getUserById } = require('../model/index')
 const roles = require('../roles.json')
-const { storeIp } = require('../model/index')
-
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -18,26 +16,23 @@ const auth = async (req, res, next) => {
                 res.status(401).json({ status: false, message: `Unauthorized Access` })
             }
             req.user = { username: user.username, email: user.email, userId: userId, role: user.role }
-            const u_id = req.user.userId
+            const { method, path } = req
             const role = req.user.role
-            const method = req.method
-            const path = req.path
-            const ip = req.ip
-            await storeIp(u_id, ip, method, path)
-            const a = (roles[role][method])
-            if (a === undefined) {
-                return res.status(404).json({ status: false, message: `You are not authorized. Only admins have access` })
+            const authorization = (roles[role][method])
+            if (authorization === undefined) {
+                return res.status(404).json({ status: false, message: `Unauthorized Access` })
             }
-            let c = false
-            for (let i = 0; i < a.length; i++) {
-                if (path.startsWith(a[i])) {
-                    c = true
+            let checkRole = false
+            for (let i = 0; i < authorization.length; i++) {
+                if (path.startsWith(authorization[i])) {
+                    checkRole = true
                     break
                 }
             }
-            if (c == false) {
-                return res.status(403).json({ status: false, message: `You are not authorized. Only admins have access` })
+            if (checkRole == false) {
+                return res.status(403).json({ status: false, message: `Unauthorized Access` })
             }
+
             next()
         }
         else {
@@ -47,9 +42,5 @@ const auth = async (req, res, next) => {
         res.status(401).json({ status: false, message: error.message })
     }
 }
-
-
-
-
 
 module.exports = auth

@@ -11,7 +11,8 @@
             "/event/update"
         ],
         "DELETE": [
-            "/event/delete"
+            "/event/delete",
+            "/database/ip"
         ]
     },
     "user": {
