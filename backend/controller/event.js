@@ -1,4 +1,4 @@
-const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent, storeIp, deleteIp } = require('../model/index')
+const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent, storeIp } = require('../model/index')
 const fs = require('fs')
 const path = require('path')
 
@@ -100,17 +100,7 @@ const getEventImage = async (req, res) => {
     }
 }
 
-const deleteIps = async (req, res) => {
-    try {
-        const deletingIps = await deleteIp()
-        res.status(201).json({ status: true, message: deletingIps })
 
-    } catch (error) {
-        res.status(500).json({ status: false, message: error.message })
-
-    }
-
-}
 
 module.exports = {
     addEvent,
@@ -119,6 +109,5 @@ module.exports = {
     getAllEvents,
     getEventById,
     registerEvent,
-    getEventImage,
-    deleteIps
+    getEventImage
 }

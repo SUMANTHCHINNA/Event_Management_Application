@@ -44,3 +44,10 @@ const auth = async (req, res, next) => {
 }
 
 module.exports = auth
+
+
+
+
+
+// Total Events Created
+// Total Registered Users

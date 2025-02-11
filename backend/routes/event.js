@@ -26,7 +26,6 @@ router.delete('/event/delete/:id', deleteEvent)
 router.patch('/event/update/:id', upload.single('imagePath'), updateEvent)
 router.get('/event/all', getAllEvents)
 router.get('/event/solo/:id', getEventById)
-router.delete('/database/ip', deleteIps)
 
 
 

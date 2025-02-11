@@ -5,8 +5,20 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const mongoose = require('mongoose')
+const cron = require("node-cron")
 const dotenv = require('dotenv')
 dotenv.config()
+
+cron.schedule("55 11 * * *", async () => {
+    try {
+        await Ip.deleteMany({});
+        console.log("All IP addresses cleared.")
+    } catch (error) {
+        console.error("Error clearing IP addresses:", error)
+    }
+}, {
+    timezone: "Asia/Kolkata"
+})
 
 const checkUserInDb = async (email) => {
     try {
@@ -165,14 +177,7 @@ const sendEmail = async (email, username, name, date, imagePath, location) => {
     }
 }
 
-const deleteIp = async () => {
-    try {
-        const deletingAllIps = await Ip.deleteMany({})
-        return `Deleted ${deletingAllIps.deletedCount} records successfully`
-    } catch (error) {
-        return (`Error in deletingIps ${error}`)
-    }
-}
+
 
 module.exports = {
     checkUserInDb,
@@ -187,5 +192,5 @@ module.exports = {
     getEvent,
     storeIp,
     registerevent,
-    deleteIp
+
 }
