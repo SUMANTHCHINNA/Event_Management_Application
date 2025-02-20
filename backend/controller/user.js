@@ -1,7 +1,8 @@
-const { checkUserInDb, createUser, createToken, checkPassword, storeIp } = require('../model/index')
+const { checkUserInDb, createUser, createToken, checkPassword, storeIp, sendOtp } = require('../model/index')
 const isValid = (...fields) => {
     return fields.every(field => field === null || field?.trim())
-};
+}
+let otps = {}
 
 const register = async (req, res) => {
     try {
@@ -43,7 +44,59 @@ const login = async (req, res) => {
     }
 }
 
+const verifyOTP = async (req, res) => {
+    try {
+        const { email, otp } = req.body
+        if (!email || email.trim().length === 0) {
+            res.status(400).json({ status: false, message: `Please enter email ID` })
+        }
+        const user = await checkUserInDb(email)
+        if (user) {
+            if (otps[email] && otps[email] === otp) {
+                const token = await createToken(user._id)
+                await storeIp(user._id, req.ip, req.method, req.path)
+                return res.status(200).json({ status: true, message: "Login Successful", token })
+            }
+            else {
+                return res.status(401).json({ status: false, message: "Invalid OTP" })
+            }
+        }
+        else {
+            return res.status(401).json({ status: false, message: `User not found please register` })
+        }
+    } catch (error) {
+        return res.status(500).json({ status: false, message: error.message })
+    }
+}
+
+const generateOTP = async (req, res) => {
+    try {
+        const { email } = req.body
+        if (!email && email.trim().length === 0) {
+            res.status(400).json({ status: false, message: `Please enter email ID` })
+        }
+        const user = await checkUserInDb(email)
+        if (user) {
+            let otpValue = Math.floor(Math.random() * 9000) + 1000
+            otps[email] = otpValue
+            await sendOtp(otps[email], email, user.username)
+            setTimeout(() => {
+                delete otps[email]
+                console.log(`OTP for ${email} has been reset.`)
+            }, 300000)
+            return res.status(201).json({ status: true, message: sendOtp })
+        }
+        else {
+            return res.status(401).json({ status: false, message: `User not found please register` })
+        }
+    } catch (error) {
+        return res.status(500).json({ status: false, message: error.message })
+    }
+}
+
 module.exports = {
     register,
-    login
+    login,
+    verifyOTP,
+    generateOTP
 }

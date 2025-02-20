@@ -32,7 +32,6 @@ const auth = async (req, res, next) => {
             if (checkRole == false) {
                 return res.status(403).json({ status: false, message: `Unauthorized Access` })
             }
-
             next()
         }
         else {

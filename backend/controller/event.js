@@ -1,20 +1,19 @@
-const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent, storeIp } = require('../model/index')
+const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent, storeIp, newSuggest, updateDetails, adminMetrics } = require('../model/index')
 const fs = require('fs')
 const path = require('path')
-
 
 const addEvent = async (req, res) => {
     try {
         let { userId } = req.user.userId
         let { ip, method, path } = req
         storeIp(userId, ip, method, path)
-        const { name, description, date, location, attendees } = req.body
+        const { name, description, date, location, attendees, type } = req.body
         const imagePath = req.file ? `/images/${req.file.filename}` : null
         if (!name || !description || !date || !attendees || name.trim().length == 0 || description.trim().length == 0) {
             if (req.file) fs.unlinkSync(req.file.path)
             return res.status(400).json({ status: false, message: `please fill all fields` })
         }
-        const create = await createEvent({ name, description, date, location, attendees, imagePath })
+        const create = await createEvent({ name, description, date, location, attendees, imagePath, type })
         res.status(201).json({ status: true, message: create })
     } catch (error) {
         if (req.file) fs.unlinkSync(req.file.path)
@@ -77,13 +76,13 @@ const getEventById = async (req, res) => {
 
 const registerEvent = async (req, res) => {
     try {
-        let { userId } = req.user.userId
+        let userId = req.user.userId
         let { ip, method, path } = req
         storeIp(userId, ip, method, path)
         const event_id = req.params.id
         const name = req.user.username
         const email = req.user.email
-        const registered = await registerevent(event_id, name, email)
+        const registered = await registerevent(event_id, name, email, userId)
         res.status(201).json({ status: true, message: registered })
     } catch (error) {
         res.status(500).json({ status: false, message: error.message })
@@ -100,7 +99,35 @@ const getEventImage = async (req, res) => {
     }
 }
 
+const userSuggest = async (req, res) => {
+    try {
+        const { data } = req.body
+        const addSuggestion = await newSuggest(req.user.userId, data, req.user.username)
+        res.status(201).json({ status: true, message: addSuggestion })
+    } catch (error) {
+        res.status(500).json({ status: false, message: error.message })
+    }
+}
 
+const updateProfile = async (req, res) => {
+    try {
+        const { username, email, password } = req.body
+        let userId = req.user.userId
+        const update = await updateDetails({ username, email, password, userId })
+        res.status(201).json({ status: true, message: update })
+    } catch (error) {
+        res.status(500).json({ status: false, message: error.message })
+    }
+}
+
+const adminAnalytics = async (req, res) => {
+    try {
+        const data = await adminMetrics()
+        res.status(201).json({ status: true, message: data })
+    } catch (error) {
+        res.status(500).json({ status: false, message: error.message })
+    }
+}
 
 module.exports = {
     addEvent,
@@ -109,5 +136,8 @@ module.exports = {
     getAllEvents,
     getEventById,
     registerEvent,
-    getEventImage
+    getEventImage,
+    userSuggest,
+    updateProfile,
+    adminAnalytics
 }

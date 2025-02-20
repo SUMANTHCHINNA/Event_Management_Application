@@ -3,8 +3,7 @@ const router = express.Router()
 const multer = require('multer')
 const path = require('path')
 const auth = require("../middleware/auth")
-const { addEvent, deleteEvent, updateEvent, getAllEvents, getEventById, registerEvent, getEventImage, deleteIps } = require('../controller/event')
-
+const { addEvent, deleteEvent, updateEvent, getAllEvents, getEventById, registerEvent, getEventImage, userSuggest, updateProfile, adminAnalytics } = require('../controller/event')
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -20,13 +19,14 @@ router.get('/event/images/:id', getEventImage)
 
 router.use(auth)
 
-router.post('/event/register/:id', registerEvent)
 router.post('/event/add', upload.single('imagePath'), addEvent)
 router.delete('/event/delete/:id', deleteEvent)
 router.patch('/event/update/:id', upload.single('imagePath'), updateEvent)
 router.get('/event/all', getAllEvents)
 router.get('/event/solo/:id', getEventById)
-
-
+router.post('/event/register/:id', registerEvent)
+router.post('/event/suggest', userSuggest)
+router.patch('/user/updateProfile', updateProfile)
+router.get('/admin/analytics', adminAnalytics)
 
 module.exports = router

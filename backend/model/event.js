@@ -4,6 +4,7 @@ const eventSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     date: { type: Date, required: true },
+    type: { type: String },
     location: { type: String, required: true },
     attendees: { type: Number, default: 0 },
     imagePath: { type: String }

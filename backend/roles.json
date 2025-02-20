@@ -2,7 +2,8 @@
     "admin": {
         "GET": [
             "/event/all",
-            "/event/solo"
+            "/event/solo",
+            "/admin/analytics"
         ],
         "POST": [
             "/event/add"
@@ -20,7 +21,11 @@
             "/event/solo"
         ],
         "POST": [
-            "/event/register"
+            "/event/register",
+            "/event/suggest"
+        ],
+        "PATCH": [
+            "/user/updateProfile"
         ]
     },
     "guest": {
