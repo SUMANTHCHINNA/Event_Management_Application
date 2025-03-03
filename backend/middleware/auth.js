@@ -15,7 +15,7 @@ const auth = async (req, res, next) => {
             if (!user) {
                 res.status(401).json({ status: false, message: `Unauthorized Access` })
             }
-            req.user = { username: user.username, email: user.email, userId: userId, role: user.role }
+            req.user = { userId: userId, role: user.role }
             const { method, path } = req
             const role = req.user.role
             const authorization = (roles[role][method])

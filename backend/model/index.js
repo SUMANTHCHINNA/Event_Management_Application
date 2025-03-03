@@ -9,6 +9,7 @@ const dotenv = require('dotenv')
 const suggest = require('../model/suggest.js')
 const register = require('../model/registerStatus.js')
 const { sendEmail } = require('../utils/mailServices.js')
+const roles = require('../roles.json')
 dotenv.config()
 
 cron.schedule("55 11 * * *", async () => {
@@ -136,37 +137,37 @@ const registerevent = async (event_id, username, email, userId) => {
         let regidteredSubject = `Registration Confirmation for ${name}`
         let registeredContent = {
             html: `
-            <div
-                style="font-family: Arial, sans-serif; color: #333; padding: 25px; border: 2px solid #ddd; border-radius: 12px; max-width: 700px; margin: auto; background-color: #f9f9f9;">
-                <h1 style="color: #007BFF; text-align: center;">Registration Confirmation</h1>
-                <h3 style="color: #444;">Dear <strong>${username}</strong>,</h3>
+            <div>
+                <h1>Registration Confirmation</h1>
+                <h3>Dear <strong>${username}</strong>,</h3>
                 <p>We are pleased to confirm your registration for the upcoming event. Thank you for your interest, and we look forward to your participation.</p>
-                <h2 style="color: #28A745; text-align: center;">${name}</h2>
-                <p style="color: #222;"><strong>Event Date:</strong> ${date}</p>
-                <p style="color: #222;"><strong>Event Location:</strong> ${location}</p>
+                <h2>${name}</h2>
+                <p><strong>Event Date:</strong> ${date}</p>
+                <p><strong>Event Location:</strong> ${location}</p>
                 <p>This event is designed to provide an enriching experience, offering valuable insights, networking opportunities, and knowledge sharing from industry experts. We encourage you to take full advantage of this opportunity.</p>
-                <h4 style="text-align: center; color: #007BFF;">We look forward to welcoming you at the event!</h4>
-                <p style="text-align: center; color: #777;">If you have any questions, please do not hesitate to reach out to our support team at <a href="mailto:chinnasumanth123@gmail.com">chinnasumanth123@gmail.com</a>.</p>
-                <p style="text-align: center; color: #777;">Thank you for your registration!</p>
+                <h4>We look forward to welcoming you at the event!</h4>
+                <p>If you have any questions, please reach out to our support team at <a href="mailto:chinnasumanth123@gmail.com">chinnasumanth123@gmail.com</a>.</p>
+                <p>Thank you for your registration!</p>
             </div>
+
         `
         }
         let unRegidteredSubject = `Unregistration Confirmation for ${name}`
         let unRegisteredContent = {
             html: `
-            <div
-                style="font-family: Arial, sans-serif; color: #333; padding: 25px; border: 2px solid #ddd; border-radius: 12px; max-width: 700px; margin: auto; background-color: #f9f9f9;">
-                <h1 style="color: #DC3545; text-align: center;">Unregistration Confirmation</h1>
-                <h3 style="color: #444;">Dear <strong>${username}</strong>,</h3>
+            <div>
+                <h1>Unregistration Confirmation</h1>
+                <h3>Dear <strong>${username}</strong>,</h3>
                 <p>We regret to inform you that your registration for the event has been successfully <strong>canceled</strong>.</p>
-                <h2 style="color: #DC3545; text-align: center;">${name}</h2>
-                <p style="color: #222;"><strong>Event Date:</strong> ${date}</p>
-                <p style="color: #222;"><strong>Event Location:</strong> ${location}</p>
+                <h2>${name}</h2>
+                <p><strong>Event Date:</strong> ${date}</p>
+                <p><strong>Event Location:</strong> ${location}</p>
                 <p>If this cancellation was made in error or if you wish to re-register, please contact us at your earliest convenience.</p>
-                <h4 style="text-align: center; color: #007BFF;">We hope to see you at a future event!</h4>
-                <p style="text-align: center; color: #777;">For any inquiries, please reach out to our support team at <a href="mailto:chinnasumanth123@gmail.com">chinnasumanth123@gmail.com</a>.</p>
-                <p style="text-align: center; color: #777;">Thank you for your understanding.</p>
+                <h4>We hope to see you at a future event!</h4>
+                <p>For any inquiries, please reach out to our support team at <a href="mailto:chinnasumanth123@gmail.com">chinnasumanth123@gmail.com</a>.</p>
+                <p>Thank you for your understanding.</p>
             </div>
+
         `
         }
         const eventObjectId = new mongoose.Types.ObjectId(event_id)
@@ -205,9 +206,9 @@ const registerevent = async (event_id, username, email, userId) => {
     }
 }
 
-const newSuggest = async (userId, data, username) => {
+const newSuggest = async (user, name, description, date, location, attendees, type, imagePath) => {
     try {
-        await suggest.create({ user: userId, data: data, username: username })
+        await suggest.create({ user: new mongoose.Types.ObjectId(user), name: name, description: description, date: date, location: location, attendees: attendees, type: type, imagePath: imagePath })
         return `Suggestion sent successfully`
     } catch (error) {
         return `Error in newSuggest: ${error.message}`
@@ -219,20 +220,19 @@ const sendOtp = async (otp, email, username) => {
         let otpSubject = `Your OTP for Verification`;
         let otpContent = {
             html: `
-            <div
-                style="font-family: Arial, sans-serif; color: #333; padding: 25px; border: 2px solid #ddd; border-radius: 12px; max-width: 700px; margin: auto; background-color: #f9f9f9;">
-                <h1 style="color: #007BFF; text-align: center;">OTP Verification</h1>
-                <h3 style="color: #444;">Dear <strong>${username}</strong>,</h3>
+            <div>
+                <h1>OTP Verification</h1>
+                <h3>Dear <strong>${username}</strong>,</h3>
                 <p>Thank you for your request. Your One-Time Password (OTP) for verification is:</p>
-                <h2 style="color: #28A745; text-align: center;">${otp}</h2>
-                <p style="color: #222;">Please enter this OTP in the application to complete your verification process.</p>
-                <p style="color: #222;">This OTP is valid for <strong>5 minutes</strong>. Please do not share it with anyone.</p>
-                <h4 style="text-align: center; color: #007BFF;">Important: Change Your Password</h4>
-                <p style="color: #222;">After logging into the system, we recommend that you change your password to ensure the security of your account.</p>
-                <p style="color: #222;">To change your password, navigate to the account settings section after logging in.</p>
-                <h4 style="text-align: center; color: #007BFF;">Thank you for using our service!</h4>
-                <p style="text-align: center; color: #777;">If you did not request this OTP, please ignore this email.</p>
-                <p style="text-align: center; color: #777;">For any questions, feel free to reach out to our support team at <a href="mailto:chinnasumanth123@gmail.com">chinnasumanth123@gmail.com</a>.</p>
+                <h2><b>${otp}</b></h2>
+                <p>Please enter this OTP in the application to complete your verification process.</p>
+                <p>This OTP is valid for <strong>5 minutes</strong>. Please do not share it with anyone.</p>
+                <h4>Important: Change Your Password</h4>
+                <p>After logging into the system, we recommend that you change your password to ensure the security of your account.</p>
+                <p>To change your password, navigate to the account settings section after logging in.</p>
+                <h4>Thank you for using our service!</h4>
+                <p>If you did not request this OTP, please ignore this email.</p>
+                <p>For any questions, feel free to reach out to our support team at <a href="mailto:chinnasumanth123@gmail.com">chinnasumanth123@gmail.com</a>.</p>
             </div>
         `
         }
@@ -276,6 +276,17 @@ const adminMetrics = async () => {
     }
 }
 
+const getUserRoleByToken = async (token) => {
+    try {
+        const id = await jwt.verify(token, process.env.KEY)
+        const userDetails = await user.findById(new mongoose.Types.ObjectId(id.userId))
+        const permissions = (roles[userDetails.role])
+        return permissions
+    } catch (error) {
+        return `Error in getUserRoleByToken: ${error.message}`
+    }
+}
+
 module.exports = {
     checkUserInDb,
     createUser,
@@ -292,6 +303,7 @@ module.exports = {
     newSuggest,
     sendOtp,
     updateDetails,
-    adminMetrics
+    adminMetrics,
+    getUserRoleByToken
 
 }

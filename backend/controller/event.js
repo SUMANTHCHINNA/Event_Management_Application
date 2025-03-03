@@ -1,4 +1,4 @@
-const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent, storeIp, newSuggest, updateDetails, adminMetrics } = require('../model/index')
+const { createEvent, deleteEventById, patchEvent, geteventsByUserId, getEvent, registerevent, storeIp, newSuggest, updateDetails, adminMetrics, getUserRoleByToken } = require('../model/index')
 const fs = require('fs')
 const path = require('path')
 
@@ -101,8 +101,14 @@ const getEventImage = async (req, res) => {
 
 const userSuggest = async (req, res) => {
     try {
-        const { data } = req.body
-        const addSuggestion = await newSuggest(req.user.userId, data, req.user.username)
+        const { name, description, date, location, attendees, type } = req.body
+        const user = req.user.userId
+        const imagePath = req.file ? `/images/${req.file.filename}` : null
+        if (!name || !description || !date || !attendees || name.trim().length == 0 || description.trim().length == 0) {
+            if (req.file) fs.unlinkSync(req.file.path)
+            return res.status(400).json({ status: false, message: `please fill all fields` })
+        }
+        const addSuggestion = await newSuggest({ user, name, description, date, location, attendees, type, imagePath })
         res.status(201).json({ status: true, message: addSuggestion })
     } catch (error) {
         res.status(500).json({ status: false, message: error.message })
@@ -129,6 +135,16 @@ const adminAnalytics = async (req, res) => {
     }
 }
 
+const getPermissions = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1]
+        const userRole = await getUserRoleByToken(token)
+        res.status(201).json({ status: true, message: userRole })
+    } catch (error) {
+        res.status(500).json({ status: false, message: error.message })
+    }
+}
+
 module.exports = {
     addEvent,
     deleteEvent,
@@ -139,5 +155,6 @@ module.exports = {
     getEventImage,
     userSuggest,
     updateProfile,
-    adminAnalytics
+    adminAnalytics,
+    getPermissions
 }

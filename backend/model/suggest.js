@@ -1,13 +1,34 @@
 const mongoose = require("mongoose")
 const SuggestSchema = new mongoose.Schema({
-    data: {
+    user: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        required: true
+    },
+    name: {
         type: String,
         required: true
     },
-    user: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'User'
+    description: {
+        type: String,
+        required: true
     },
-    username: {
+    date: {
+        type: Date,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    attendees: {
+        type: Number,
+        default: 0
+    },
+    imagePath: {
         type: String,
         required: true
     }

@@ -3,7 +3,8 @@
         "GET": [
             "/event/all",
             "/event/solo",
-            "/admin/analytics"
+            "/admin/analytics",
+            "/role"
         ],
         "POST": [
             "/event/add"
@@ -18,7 +19,8 @@
     "user": {
         "GET": [
             "/event/all",
-            "/event/solo"
+            "/event/solo",
+            "/role"
         ],
         "POST": [
             "/event/register",
@@ -31,7 +33,8 @@
     "guest": {
         "GET": [
             "/event/all",
-            "/event/solo"
+            "/event/solo",
+            "/role"
         ]
     }
 }
