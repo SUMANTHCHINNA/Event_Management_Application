@@ -13,6 +13,6 @@ const RegisterStatusSchema = new mongoose.Schema({
         enum: ["registered", "unregistered"],
         default: "unregistered"
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model("Register", RegisterStatusSchema)

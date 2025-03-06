@@ -4,23 +4,36 @@
             "/event/all",
             "/event/solo",
             "/admin/analytics",
-            "/role"
+            "/role",
+            "/event/suggest/all",
+            "/event/suggest/accept",
+            "/event/suggest/reject",
+            "/event/suggest/one",
+            "/users",
+            "/event/pastEvents",
+            "/event/futureEvents",
+            "/event/range",
+            "/event/today",
+            "/event/registers"
         ],
         "POST": [
-            "/event/add"
+            "/user/block"
         ],
-        "PATCH": [
-            "/event/update"
-        ],
-        "DELETE": [
-            "/event/delete"
-        ]
+        "PATCH": [],
+        "DELETE": []
     },
     "user": {
         "GET": [
             "/event/all",
             "/event/solo",
-            "/role"
+            "/role",
+            "/event/mySuggestions",
+            "/event/pastEvents",
+            "/event/futureEvents",
+            "/event/today",
+            "/event/mySuggestions/accepted",
+            "/event/mySuggestions/rejected",
+            "/user/details"
         ],
         "POST": [
             "/event/register",
@@ -34,7 +47,10 @@
         "GET": [
             "/event/all",
             "/event/solo",
-            "/role"
+            "/role",
+            "/event/pastEvents",
+            "/event/futureEvents",
+            "/event/today"
         ]
     }
 }

@@ -16,12 +16,15 @@ app.use(eventRouter)
 
 const port = process.env.PORT
 
-mongoose.connect(process.env.MONGO_DB_URL)
-    .then(() => {
+const connect = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_DB_URL)
         app.listen(port, () => {
             console.log(`The server running on port ${port}`)
         })
-    })
-    .catch((error) => {
+    } catch (error) {
         console.log(`The DB not connected ${error}`)
-    })
+    }
+}
+
+connect()

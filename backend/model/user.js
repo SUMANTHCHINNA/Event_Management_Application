@@ -9,6 +9,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    occupation: {
+        type: String,
+        required: true
+    },
     password: {
         type: String,
         required: true
@@ -18,8 +22,12 @@ const UserSchema = new mongoose.Schema({
         enum: ['admin', 'user', 'guest'],
         default: 'user',
         required: true
+    },
+    status: {
+        type: String,
+        enum: ["active", 'in-active'],
+        default: "active"
     }
-
 }, { timestamps: true })
 
 module.exports = mongoose.model("User", UserSchema)

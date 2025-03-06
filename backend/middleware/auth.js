@@ -15,7 +15,7 @@ const auth = async (req, res, next) => {
             if (!user) {
                 res.status(401).json({ status: false, message: `Unauthorized Access` })
             }
-            req.user = { userId: userId, role: user.role }
+            req.user = { userId: userId, role: user.role, email: user.email, username: user.username }
             const { method, path } = req
             const role = req.user.role
             const authorization = (roles[role][method])
@@ -43,10 +43,3 @@ const auth = async (req, res, next) => {
 }
 
 module.exports = auth
-
-
-
-
-
-// Total Events Created
-// Total Registered Users
