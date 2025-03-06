@@ -1,3 +1,5 @@
+`bash
+
 {
   name: Cyber Summit 2025,
   description: A premier cybersecurity conference featuring expert talks, workshops, and networking opportunities. Hosted by the Indian Cyber Security Council. Key speakers include Dr. Rajesh Kumar (Cybersecurity Expert, IIT Delhi), Ananya Sharma (Chief Technology Officer, SecureTech), and Michael Lee (Global Head of Cyber Defense, CyberShield Inc.). The event will be graced by Chief Guest Mr. Nandan Nilekani, Co-founder of Infosys.,
@@ -7,10 +9,10 @@
   attendees: 100,
   imagePath: '/images/1741074319998.jpg'
 }
+`
 
 
-
-
+`bash
 {
   name: Generative AI Summit 2025,
   description: A premier conference focused on the latest advancements in Generative AI, featuring keynote sessions, hands-on workshops, and panel discussions. Hosted by the Global AI Research Council. Key speakers include Dr. Aditi Rao (AI Research Lead, OpenAI), Prof. Vikram Mehta (Machine Learning Expert, MIT), and Lisa Chen (Head of AI Strategy, DeepMind),
@@ -21,7 +23,7 @@
   imagePath: '/images/1741074319998.jpg'
 
 }
-
+`
 
 # Sample Admin Analytics calculation
 
