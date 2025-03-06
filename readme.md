@@ -1,4 +1,4 @@
-`bash
+```bash
 
 {
   name: Cyber Summit 2025,
@@ -9,10 +9,10 @@
   attendees: 100,
   imagePath: '/images/1741074319998.jpg'
 }
-`
+```
 
 
-`bash
+```bash
 {
   name: Generative AI Summit 2025,
   description: A premier conference focused on the latest advancements in Generative AI, featuring keynote sessions, hands-on workshops, and panel discussions. Hosted by the Global AI Research Council. Key speakers include Dr. Aditi Rao (AI Research Lead, OpenAI), Prof. Vikram Mehta (Machine Learning Expert, MIT), and Lisa Chen (Head of AI Strategy, DeepMind),
@@ -23,8 +23,9 @@
   imagePath: '/images/1741074319998.jpg'
 
 }
-`
+```
 
+```bash
 # Sample Admin Analytics calculation
 
 Metric	                                Value
@@ -33,11 +34,12 @@ Total Events(E)	                        50
 Total Registrations(TR)	                600
 Users Unregistered(UU)	                100
 
-Overall Platform Conversion Rate:
+# Overall Platform Conversion Rate:
 𝑂𝑃𝐶𝑅 = ( 600 / 1000 ) × 100 = 60%
 
-Average Registrations Per Event:
+# Average Registrations Per Event:
 𝐴𝑅𝐸 = (600 / 50 ) = 12
 
-Event Unregistration Rate:
+# Event Unregistration Rate:
 𝐸𝑈𝑅 = ( 100 / 600 ) × 100 = 16.67%
+```
